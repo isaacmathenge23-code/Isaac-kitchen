@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isaac's Kitchen | Executive Private Chef & Live-Fire Services</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-body: #FDFBF7;
+            --bg-card: #FFFFFF;
+            --text-dark: #231F20;
+            --text-muted: #666059;
+            --accent-terracotta: #A84B32;
+            --accent-gold: #C5A059;
+            --border-warm: #EADEC9;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-body);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Slide-out Navigation Drawer Overlay */
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(35, 31, 32, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Side Navigation Drawer */
+        .side-drawer {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: 340px;
+            height: 100vh;
+            background-color: var(--bg-body);
+            border-right: 1px solid var(--border-warm);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            padding: 2.5rem 1.8rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.08);
+        }
+
+        .side-drawer.active {
+            left: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-terracotta);
+            padding-bottom: 1rem;
+        }
+
+        .drawer-header h3 {
+            font-family: var(--font-heading);
+            color: var(--accent-terracotta);
+            letter-spacing: 1px;
+            font-size: 1.3rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        .drawer-contact-info {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .info-item i {
+            color: var(--accent-terracotta);
+            font-size: 1.1rem;
+            margin-top: 3px;
+        }
+
+        .info-item p {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .info-item span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-terracotta);
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--border-warm);
+            border-radius: 4px;
+            background: #FFFFFF;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            background: var(--accent-terracotta);
+            color: #FFFFFF;
+            border-color: var(--accent-terracotta);
+        }
+
+        .drawer-footer-btn {
+            display: block;
+            width: 100%;
+            padding: 0.9rem;
+            background: #25D366;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-top: auto;
+            letter-spacing: 0.5px;
+        }
+
+        /* Header Bar */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: rgba(253, 251, 247, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-warm);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--accent-terracotta);
+            font-size: 1.6rem;
+            cursor: pointer;
+        }
+
+        .brand-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: var(--accent-terracotta);
+            letter-spacing: 1.5px;
+            text-align: center;
+        }
+
+        .brand-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .header-social {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .header-social:hover {
+            color: var(--accent-terracotta);
+        }
+
+        .whatsapp-quick-btn {
+            color: #25D366;
+            font-size: 1.6rem;
+            text-decoration: none;
+        }
+
+        /* Hero Banner with Dynamic Background Image */
+        .hero-section {
+            position: relative;
+            background: linear-gradient(rgba(35, 31, 32, 0.65), rgba(35, 31, 32, 0.75)), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            color: #FFFFFF;
+            padding: 5rem 1.5rem;
+            text-align: center;
+            border-bottom: 3px solid var(--accent-terracotta);
+            transition: background 0.3s ease;
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            max-width: 650px;
+            margin: 0 auto 1.5rem auto;
+            color: #EADEC9;
+            font-weight: 300;
+        }
+
+        .hero-upload-btn {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid #FFFFFF;
+            color: #FFFFFF;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            margin-top: 1rem;
+        }
+
+        .hero-upload-btn:hover {
+            background: #FFFFFF;
+            color: var(--text-dark);
+        }
+
+        /* Layout Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-heading);
+            color: var(--accent-terracotta);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        /* Cards Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-warm);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .photo-preview-slot {
+            width: 100%;
+            height: 250px;
+            background-color: #F4EFE6;
+            border-bottom: 1px dashed var(--border-warm);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .photo-preview-slot.has-image .placeholder-text {
+            display: none;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 1.5rem;
+        }
+
+        .placeholder-text i {
+            font-size: 2rem;
+            color: var(--accent-terracotta);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .upload-input-label {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--accent-terracotta);
+            color: var(--accent-terracotta);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-family: var(--font-heading);
+            color: var(--text-dark);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-tag {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.6rem;
+            background-color: rgba(168, 75, 50, 0.1);
+            color: var(--accent-terracotta);
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .card-text {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        /* Recipe Box */
+        .recipe-box {
+            background: #FDFBF7;
+            border-top: 1px solid var(--border-warm);
+            padding: 1.2rem;
+            font-size: 0.85rem;
+        }
+
+        .recipe-title {
+            font-family: var(--font-heading);
+            color: var(--accent-terracotta);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .ingredients-list {
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+
+        .ingredients-list li {
+            position: relative;
+            padding-left: 1.2rem;
+            color: var(--text-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .ingredients-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-terracotta);
+        }
+
+        .steps-list {
+            padding-left: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .steps-list li {
+            margin-bottom: 0.4rem;
+        }
+
+        .btn-inquire {
+            display: block;
+            width: 100%;
+            padding: 0.9rem;
+            text-align: center;
+            background-color: var(--accent-terracotta);
+            color: #FFFFFF;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .btn-inquire:hover {
+            background-color: #8C3C26;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            background-color: #FFFFFF;
+            border-top: 1px solid var(--border-warm);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-socials a {
+            color: var(--accent-terracotta);
+            font-size: 1.3rem;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide-out Side Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+    
+    <div class="side-drawer" id="sideDrawer">
+        <div>
+            <div class="drawer-header">
+                <h3>ISAAC'S KITCHEN</h3>
+                <button class="close-btn" onclick="toggleDrawer()">&times;</button>
+            </div>
+            
+            <div class="drawer-contact-info">
+                <div class="info-item">
+                    <i class="fa-solid fa-user-chef"></i>
+                    <div>
+                        <p>Isaac Mathenge Mbugua</p>
+                        <span>Executive Private Chef & Caterer</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div>
+                        <p>Karen, Nairobi, Kenya</p>
+                        <span>Available for Private & Live-Fire Catering</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <p>016729104 / 0702929426</p>
+                        <span>Direct Booking Calls</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div>
+                        <p>isaackitchen@gmail.com</p>
+                        <p>IsaacMathenge23@gmail.com</p>
+                        <span>Official Contact Emails</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <div>
+                        <p>Follow & Connect</p>
+                        <div class="social-links">
+                            <a href="https://www.instagram.com/isaa_kitchen?cplk=MWpuNDdlY3NmOGFrOQ==" target="_blank" rel="noopener noreferrer" class="social-btn">
+                                <i class="fa-brands fa-instagram"></i> Instagram
+                            </a>
+                            <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" class="social-btn">
+                                <i class="fa-brands fa-tiktok"></i> TikTok
+                            </a>
+                            <a href="https://www.linkedin.com/in/isaacmathenge" target="_blank" rel="noopener noreferrer" class="social-btn">
+                                <i class="fa-brands fa-linkedin"></i> LinkedIn
+                            </a>
+                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-btn">
+                                <i class="fa-brands fa-youtube"></i> YouTube
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="https://wa.me/254702929426?text=Hello%20Chef%20Isaac,%20I%20would%20like%20to%20inquire%20about%20booking%20your%20culinary%20services." target="_blank" class="drawer-footer-btn">
+            <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+        </a>
+    </div>
+
+    <!-- Header Navigation Bar -->
+    <header>
+        <button class="menu-toggle" onclick="toggleDrawer()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+            <div class="brand-title">ISAAC'S KITCHEN</div>
+            <div class="brand-subtitle">Private Chef & Live-Fire Culinary Services</div>
+        </div>
+        <div class="header-actions">
+            <a href="https://www.instagram.com/isaa_kitchen?cplk=MWpuNDdlY3NmOGFrOQ==" target="_blank" class="header-social" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://tiktok.com" target="_blank" class="header-social" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="https://www.linkedin.com/in/isaacmathenge" target="_blank" class="header-social" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="https://wa.me/254702929426?text=Hello%20Chef%20Isaac,%20I'm%20visiting%20your%20website%20and%20would%20like%20to%20inquire%20about%20a%20private%20booking." target="_blank" class="whatsapp-quick-btn" title="WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Asma Khan Editorial Hero Section -->
+    <section class="hero-section" id="heroBanner">
+        <h1 class="hero-title">Culinary Craft & Live-Fire Hospitality</h1>
+        <p class="hero-subtitle">Elevated private dining experiences, open-flame searing, and handcrafted artisanal dishes in Karen, Nairobi.</p>
+        <label class="hero-upload-btn">
+            <i class="fa-solid fa-camera"></i> Change Hero Banner Dish
+            <input type="file" class="file-input" accept="image/*" onchange="previewHeroImage(this)">
+        </label>
+    </section>
+
+    <div class="container">
+
+        <!-- SECTION 1: LIVE FIRE SHOWCASE #1 -->
+        <div class="section-header">
+            <h2>LIVE-FIRE GRILL SHOWCASE #1</h2>
+            <p>Choma Sausages, Bell Peppers & Sweet Corn with Chapati & Fresh Guacamole</p>
+        </div>
+
+        <div class="grid-2">
+            <!-- Slot 1: On the Grill -->
+            <div class="card">
+                <div class="photo-preview-slot" id="preview-grill-1">
+                    <div class="placeholder-text">
+                        <i class="fa-solid fa-fire-burner"></i>
+                        <p><b>On the Grill Setup</b></p>
+                        <p>Upload photo of Choma Sausages, Peppers & Corn searing on coals</p>
+                    </div>
+                    <label class="upload-input-label">
+                        <i class="fa-solid fa-camera"></i> Upload Photo
+                        <input type="file" class="file-input" accept="image/*" onchange="previewImage(this, 'preview-grill-1')">
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        Hardwood Ember Setup
+                        <span class="badge-tag">Live-Fire</span>
+                    </div>
+                    <p class="card-text">Open flame searing of seasoned choma sausages, sweet corn cobs, and fresh bell peppers over glowing embers.</p>
+                </div>
+            </div>
+
+            <!-- Slot 2: Plated Presentation -->
+            <div class="card">
+                <div class="photo-preview-slot" id="preview-plated-1">
+                    <div class="placeholder-text">
+                        <i class="fa-solid fa-utensils"></i>
+                        <p><b>Plated Presentation</b></p>
+                        <p>Upload photo of the served dish with warm chapati & fresh guacamole</p>
+                    </div>
+                    <label class="upload-input-label">
+                        <i class="fa-solid fa-camera"></i> Upload Photo
+                        <input type="file" class="file-input" accept="image/*" onchange="previewImage(this, 'preview-plated-1')">
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        Plated Feast & Sides
+                        <span class="badge-tag">Served</span>
+                    </div>
+                    <p class="card-text">Flame-kissed sausages paired with handcrafted soft layered chapatis and fresh house-made guacamole.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: LIVE FIRE SHOWCASE #2 -->
+        <div class="section-header">
+            <h2>LIVE-FIRE GRILL SHOWCASE #2</h2>
+            <p>Choma Sausages, Sweet Corn, Bell Peppers, Zucchini & Portobello Mushrooms with BBQ Sauce</p>
+        </div>
+
+        <div class="grid-2">
+            <!-- Slot 1: On the Grill -->
+            <div class="card">
+                <div class="photo-preview-slot" id="preview-grill-2">
+                    <div class="placeholder-text">
+                        <i class="fa-solid fa-fire"></i>
+                        <p><b>On the Grill Setup</b></p>
+                        <p>Upload photo of sausages, zucchini, portobellos & corn grilling</p>
+                    </div>
+                    <label class="upload-input-label">
+                        <i class="fa-solid fa-camera"></i> Upload Photo
+                        <input type="file" class="file-input" accept="image/*" onchange="previewImage(this, 'preview-grill-2')">
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        Hardwood Grill Setup
+                        <span class="badge-tag">Grill Action</span>
+                    </div>
+                    <p class="card-text">High heat searing of hearty portobello mushrooms, fresh zucchini wheels, corn cobs, and sausages.</p>
+                </div>
+            </div>
+
+            <!-- Slot 2: Plated Presentation -->
+            <div class="card">
+                <div class="photo-preview-slot" id="preview-plated-2">
+                    <div class="placeholder-text">
+                        <i class="fa-solid fa-plate-wheat"></i>
+                        <p><b>Plated Presentation</b></p>
+                        <p>Upload photo of the served platter with rich BBQ sauce</p>
+                    </div>
+                    <label class="upload-input-label">
+                        <i class="fa-solid fa-camera"></i> Upload Photo
+                        <input type="file" class="file-input" accept="image/*" onchange="previewImage(this, 'preview-plated-2')">
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        Barbecue Harvest Platter
+                        <span class="badge-tag">Plated</span>
+                    </div>
+                    <p class="card-text">Gourmet barbecue arrangement featuring charred portobello slices and fresh vegetables brushed with rich BBQ sauce.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: PIEROGI CRAFT & PRESENTATION -->
+        <div class="section-header">
+            <h2>HANDMADE PIEROGIS</h2>
+            <p>Polish Potato & Ricotta Dumplings with Bacon & Onions</p>
+        </div>
+
+        <div class="grid-2">
+            <!-- Slot 1: Prepped / Raw -->
+            <div class="card">
+                <div class="photo-preview-slot" id="preview-pierogi-prep">
+                    <div class="placeholder-text">
+                        <i class="fa-solid fa-kitchen-set"></i>
+                        <p><b>Prepared & Uncooked Setup</b></p>
+                        <p>Upload photo of shaped, uncooked pierogis laid out on floured board</p>
+                    </div>
+                    <label class="upload-input-label">
+                        <i class="fa-solid fa-camera"></i> Upload Photo
+                        <input type="file" class="file-input" accept="image/*" onchange="previewImage(this, 'preview-pierogi-prep')">
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        Crafted Dumpling Prep
+                        <span class="badge-tag">Prepped</span>
+                    </div>
+                    <p class="card-text">Fresh hand-crimped pierogis filled with 334g seasoned potato mash, rich ricotta cheese, and herbs ready for boiling.</p>
+                </div>
+            </div>
+
+            <!-- Slot 2: Cooked & Plated -->
+            <div class="card">
+                <div class="photo-preview-slot" id="preview-pierogi-plated">
+                    <div class="placeholder-text">
+                        <i class="fa-solid fa-bowl-food"></i>
+                        <p><b>Final Cooked & Plated Dish</b></p>
+                        <p>Upload photo of pan-seared golden pierogis with crisp bacon</p>
+                    </div>
+                    <label class="upload-input-label">
+                        <i class="fa-solid fa-camera"></i> Upload Photo
+                        <input type="file" class="file-input" accept="image/*" onchange="previewImage(this, 'preview-pierogi-plated')">
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        Pan-Seared Pierogi Dish
+                        <span class="badge-tag">Plated Dish</span>
+                    </div>
+                    <p class="card-text">Boiled and butter-pan-seared until golden, topped with crispy bacon lardons, caramelized onions, and yogurt.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: RECIPE COLLECTION TEMPLATES -->
+        <div class="section-header">
+            <h2>SIGNATURE RECIPES</h2>
+            <p>Mastered Formulas & Step-by-Step Culinary Creations</p>
+        </div>
+
+        <div class="grid-2">
+
+            <!-- RECIPE 1: PUMPKIN GNOCCHI -->
+            <div class="card">
+                <div class="photo-preview-slot" id="preview-gnocchi">
+                    <div class="placeholder-text">
+                        <i class="fa-solid fa-mortar-pestle"></i>
+                        <p><b>Pumpkin Gnocchi Slot</b></p>
+                        <p>Upload photo of your handmade pumpkin gnocchi dish</p>
+                    </div>
+                    <label class="upload-input-label">
+                        <i class="fa-solid fa-camera"></i> Upload Photo
+                        <input type="file" class="file-input" accept="image/*" onchange="previewImage(this, 'preview-gnocchi')">
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        Handcrafted Pumpkin Gnocchi
+                        <span class="badge-tag">Italian Specialty</span>
+                    </div>
+                    <p class="card-text">Light-as-air roasted pumpkin gnocchi pan-tossed in brown butter, crisp fresh sage, and grated parmesan.</p>
+                </div>
+                <div class="recipe-box">
+                    <div class="recipe-title"><i class="fa-solid fa-book-open"></i> Recipe Formula</div>
+                    <p><b>Ingredients (Metric Weight):</b></p>
+                    <ul class="ingredients-list">
+                        <li>350g Roasted Pumpkin Puree (drained)</li>
+                        <li>250g Mashed Potato Base</li>
+                        <li>200g All-Purpose Flour</li>
+                        <li>1 Egg Yolk + 30g Parmesan Cheese</li>
+                        <li>Fresh Sage Leaves & 50g Salted Butter</li>
+                    </ul>
+                    <p><b>Method Steps:</b></p>
+                    <ol class="steps-list">
+                        <li>Combine pumpkin puree, potato mash, egg yolk, and parmesan. Fold in flour until a soft dough forms.</li>
+                        <li>Roll into ropes, cut into 2cm pillows, and press lightly with a fork.</li>
+                        <li>Boil in salted water until they float (approx. 2-3 minutes).</li>
+                        <li>Pan-sear in browned butter with fresh sage until edges turn golden.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- RECIPE 2: MOROCCAN LAMB STEW & COUSCOUS -->
+            <div class="card">
+                <div class="photo-preview-slot" id="preview-moroccan">
+                    <div class="placeholder-text">
+                        <i class="fa-solid fa-fire-pit"></i>
+                        <p><b>Moroccan Lamb Stew Slot</b></p>
+                        <p>Upload photo of spiced lamb stew with stuffed couscous</p>
+                    </div>
+                    <label class="upload-input-label">
+                        <i class="fa-solid fa-camera"></i> Upload Photo
+                        <input type="file" class="file-input" accept="image/*" onchange="previewImage(this, 'preview-moroccan')">
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        Moroccan Spiced Lamb Stew
+                        <span class="badge-tag">Slow Cooked</span>
+                    </div>
+                    <p class="card-text">Tender chunked lamb braised in Ras el Hanout spices, tomatoes, and herbs paired with fluffy stuffed couscous.</p>
+                </div>
+                <div class="recipe-box">
+                    <div class="recipe-title"><i class="fa-solid fa-book-open"></i> Recipe Formula</div>
+                    <p><b>Ingredients (Metric Weight):</b></p>
+                    <ul class="ingredients-list">
+                        <li>600g Boneless Lamb Shoulder (cubed)</li>
+                        <li>15g Ras el Hanout Spice Blend</li>
+                        <li>300g Stewed Tomato & Garlic Base</li>
+                        <li>250g Steamed Couscous</li>
+                    </ul>
+                    <p><b>Method Steps:</b></p>
+                    <ol class="steps-list">
+                        <li>Sear lamb cubes in hot oil until deeply browned.</li>
+                        <li>Add Ras el Hanout, garlic, and tomato base; braise on low heat for 2 hours until fork-tender.</li>
+                        <li>Fluff couscous with butter and herbs, serve beneath hot lamb stew.</li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+
+        <a href="https://wa.me/254702929426?text=Hello%20Chef%20Isaac,%20I%20saw%20your%20recipe%20portfolio%20and%20would%20like%20to%20book%20a%20private%20dining%20experience." target="_blank" class="btn-inquire">
+            <i class="fa-brands fa-whatsapp"></i> Reserve Private Dining / Live-Fire Event
+        </a>
+
+    </div>
+
+    <footer>
+        <div class="footer-socials">
+            <a href="https://www.instagram.com/isaa_kitchen?cplk=MWpuNDdlY3NmOGFrOQ==" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://tiktok.com" target="_blank" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="https://www.linkedin.com/in/isaacmathenge" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="https://wa.me/254702929426" target="_blank" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+        <p>&copy; 2026 Isaac's Kitchen. Executive Private Chef & Live-Fire Services | Karen, Nairobi, Kenya</p>
+    </footer>
+
+    <script>
+        // Toggle Side Navigation Drawer
+        function toggleDrawer() {
+            document.getElementById('sideDrawer').classList.toggle('active');
+            document.getElementById('drawerOverlay').classList.toggle('active');
+        }
+
+        // Live Image Upload Preview Handler for Cards
+        function previewImage(input, targetId) {
+            const container = document.getElementById(targetId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    container.style.backgroundImage = `url('${e.target.result}')`;
+                    container.classList.add('has-image');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Hero Background Upload Handler
+        function previewHeroImage(input) {
+            const hero = document.getElementById('heroBanner');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    hero.style.background = `linear-gradient(rgba(35, 31, 32, 0.65), rgba(35, 31, 32, 0.75)), url('${e.target.result}') center/cover no-repeat`;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
