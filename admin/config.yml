@@ -1,7 +1,9 @@
+
 backend:
   name: github
   repo: isaacmathenge23-code/Isaac-kitchen
   branch: main
+  base_url: https://decap-cms-oauth.vercel.app
 
 
 
